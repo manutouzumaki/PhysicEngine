@@ -1,2 +1,14 @@
 ﻿  particle_demo.cpp
-  PhysicsEngine.vcxproj -> D:\Dev\PhysicsEngine\Debug\PhysicsEngine.exe
+D:\dev\PhysicEngine\particle_force_generator.h(7,16): warning C4099: 'Particle': type name first seen using 'class' now seen using 'struct'
+D:\dev\PhysicEngine\particle.h(5): message : see declaration of 'Particle'
+D:\dev\PhysicEngine\particle_demo.cpp(45,24): warning C4244: '=': conversion from 'i32' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+D:\dev\PhysicEngine\particle_demo.cpp(46,33): warning C4244: '=': conversion from 'i32' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+  PhysicsEngine.vcxproj -> D:\dev\PhysicEngine\Debug\PhysicsEngine.exe

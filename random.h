@@ -6,14 +6,8 @@
 
 f32 randf()
 {
-    u32 bits = rand();
-    union {
-        f32 value;
-        u32 word;
-    } convert;
-
-    convert.word = (bits >> 9) | 0x3f800000;
-    return convert.value - 1.0f;
+    f32 result = (f32)rand() / (f32)RAND_MAX;
+    return result;
 }
 
 f32 randf(f32 min, f32 max)

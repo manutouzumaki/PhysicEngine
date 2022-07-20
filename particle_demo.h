@@ -1,30 +1,14 @@
 #pragma once
 
 #include "demo.h"
-
+#include "particle.h"
+#include "particle_force_generator.h"
 #include <glm/glm.hpp>
 
 struct Shader;
 struct Renderer;
 struct Quad;
 struct Camera;
-
-struct Particle {
-    glm::vec3 position;
-    glm::vec3 velocity;
-    glm::vec3 acceleration;
-    glm::vec3 force_accum;
-    f32 damping;
-    f32 inv_mass;
-};
-
-Particle particle_create(glm::vec3 position,
-                         glm::vec3 velocity,
-                         glm::vec3 acceleration,
-                         f32 damping, f32 mass);
-void particle_integrate(Particle* particle, f32 duration);
-void particle_add_force(Particle* particle, glm::vec3 force);
-void particle_clear_forces(Particle* particle);
 
 struct ParticleDemo : public Demo
 {
@@ -38,6 +22,9 @@ struct ParticleDemo : public Demo
     Quad* quad;
     Camera* camera;
 
-    Particle projectil;
+    Particle* pendulum0;
+    Particle* pendulum1;
+    glm::vec3 mouse_pos;
+
 };
 

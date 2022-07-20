@@ -127,16 +127,16 @@ Quad *quad_create()
 void quad_set_position(Quad* quad, glm::vec3 position)
 {
     quad->position = position;
-    quad_update_quad_model(quad);
+    quad_update_model(quad);
 }
 
 void quad_set_scale(Quad* quad, glm::vec3 scale)
 {
     quad->scale = scale;
-    quad_update_quad_model(quad);
+    quad_update_model(quad);
 }
 
-void quad_update_quad_model(Quad* quad) {
+void quad_update_model(Quad* quad) {
     glm::mat4 trans = glm::translate(glm::mat4(1.0f), quad->position);
     glm::mat4 scale = glm::scale(glm::mat4(1.0f), quad->scale);
     quad->model = trans * scale;

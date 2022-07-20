@@ -29,7 +29,7 @@ struct Quad {
 Quad *quad_create();
 void quad_set_position(Quad* quad, glm::vec3 position);
 void quad_set_scale(Quad* quad, glm::vec3 scale);
-void quad_update_quad_model(Quad* quad);
+void quad_update_model(Quad* quad);
 void quad_destroy(Quad* quad);
 
 struct Vertex {
