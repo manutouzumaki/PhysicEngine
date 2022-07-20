@@ -24,7 +24,9 @@ struct ParticleDemo : public Demo
 
     Particle* pendulum0;
     Particle* pendulum1;
-    glm::vec3 mouse_pos;
+    Particle* pendulum2;
 
+    glm::vec3 anchor;
+    Particle* bungee;
 };
 

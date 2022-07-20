@@ -58,3 +58,23 @@ public:
     virtual void update_force(Particle* particle, f32 duration);
 };
 
+class ParticleBungee : public ParticleForceGenerator {
+    Particle* other;
+    f32 spring_constant;
+    f32 rest_length;
+public:
+    ParticleBungee(Particle* other, f32 spring_constant, f32 rest_length);
+    virtual void update_force(Particle* particle, f32 duration);
+
+};
+
+class ParticleAnchorBungee : public ParticleForceGenerator {
+    glm::vec3* anchor;
+    f32 spring_constant;
+    f32 rest_length;
+public:
+    ParticleAnchorBungee(glm::vec3* anchor, f32 spring_constant, f32 rest_length);
+    virtual void update_force(Particle* particle, f32 duration);
+
+};
+

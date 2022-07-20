@@ -24,38 +24,53 @@ void ParticleDemo::start() {
     pendulum1 = new Particle();
     pendulum1->position = glm::vec3(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.5f - 100.0f, 0.0f);
 
+    pendulum2 = new Particle();
+    pendulum2->position = glm::vec3(WINDOW_WIDTH * 0.5f + 100, WINDOW_HEIGHT * 0.5f - 100.0f, 0.0f);
 
-
-    mouse_pos = glm::vec3(0.0f);
 
     pendulum0->damping = 0.3f;
-    force_registry.add(pendulum0, new ParticleAnchoredSpring(&mouse_pos, 800.0f, 1.0f));
-    force_registry.add(pendulum0, new ParticleSpring(pendulum1, 400.0f, 1.0f));
-
-    //force_registry.add(pendulum, new ParticleGravity(glm::vec3(0, -40.81, 0)));
+    pendulum0->inv_mass = 1.0f / 15.0f;
+    force_registry.add(pendulum0, new ParticleSpring(pendulum1, 10.0f, 5000.0f));
+    force_registry.add(pendulum0, new ParticleSpring(pendulum2, 10.0f, 5000.0f));
 
     pendulum1->damping = 0.3f;
-    force_registry.add(pendulum1, new ParticleSpring(pendulum0, 400.0f, 1.0f));
+    pendulum1->inv_mass = 1.0f / 10.0f;
+    force_registry.add(pendulum1, new ParticleSpring(pendulum0, 10.0f, 5000.0f));
+    force_registry.add(pendulum1, new ParticleSpring(pendulum2, 10.0f, 5000.0f));
+
+    pendulum2->damping = 0.3f;
+    pendulum2->inv_mass = 1.0f / 20.0f;
+    force_registry.add(pendulum2, new ParticleSpring(pendulum0, 10.0f, 5000.0f));
+    force_registry.add(pendulum2, new ParticleSpring(pendulum1, 10.0f, 5000.0f));
+
+    anchor = glm::vec3(0.0f);
+    bungee = new Particle();
+    bungee->damping = 0.8f;
+    bungee->inv_mass = 1.0f / 5.0f;
+    bungee->position = glm::vec3(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.5f, 0.0f);
+    force_registry.add(bungee, new ParticleAnchorBungee(&anchor, 15.0f, 100.0f));
+    force_registry.add(bungee, new ParticleGravity(glm::vec3(0.0f, -600.8f, 0.0f)));
+
+
 
 }
 
 void ParticleDemo::update(Input* input, f32 dt) {    
     camera_update_view(camera, shader);
 
-    mouse_pos.x = input->mouse_x;
-    mouse_pos.y = WINDOW_HEIGHT - input->mouse_y;
+    anchor.x = input->mouse_x;
+     anchor.y = WINDOW_HEIGHT - input->mouse_y;
 
     force_registry.update_forces(dt);
     pendulum0->integrate(dt);
     pendulum1->integrate(dt);
+    pendulum2->integrate(dt);
+    bungee->integrate(dt);
 }
 
-void ParticleDemo::render() {
 
+void ParticleDemo::render() {
     quad_set_scale(quad, glm::vec3(32, 32, 0));
-    renderer_set_color(renderer, glm::vec4(1, 0, 0, 1));
-    quad_set_position(quad, mouse_pos);
-    renderer_render_quad(renderer, quad);
 
     renderer_set_color(renderer, glm::vec4(0, 1, 0, 1));
     quad_set_position(quad, pendulum0->position);
@@ -65,13 +80,28 @@ void ParticleDemo::render() {
     quad_set_position(quad, pendulum1->position);
     renderer_render_quad(renderer, quad);
 
-    quad_set_scale(quad, glm::vec3(8, 8, 0));
+    renderer_set_color(renderer, glm::vec4(1, 0, 0, 1));
+    quad_set_position(quad, pendulum2->position);
+    renderer_render_quad(renderer, quad);
+
+    renderer_set_color(renderer, glm::vec4(1, 0, 1, 1));
+    quad_set_position(quad, bungee->position);
+    renderer_render_quad(renderer, quad);
+
+    quad_set_scale(quad, glm::vec3(4, 4, 0));
     for (f32 t = 0.0f; t < 1.0f; t += 0.01f) {
         renderer_set_color(renderer, glm::vec4(1, 1, 0, 1));
-        glm::vec3 position = glm::lerp(pendulum0->position, mouse_pos, t);
+        glm::vec3 position = glm::lerp(pendulum0->position, pendulum1->position, t);
         quad_set_position(quad, position);
         renderer_render_quad(renderer, quad);
-        position = glm::lerp(pendulum1->position, pendulum0->position, t);
+        position = glm::lerp(pendulum1->position, pendulum2->position, t);
+        quad_set_position(quad, position);
+        renderer_render_quad(renderer, quad);
+        position = glm::lerp(pendulum2->position, pendulum0->position, t);
+        quad_set_position(quad, position);
+        renderer_render_quad(renderer, quad);
+
+        position = glm::lerp(anchor, bungee->position, t);
         quad_set_position(quad, position);
         renderer_render_quad(renderer, quad);
     }
@@ -81,6 +111,8 @@ void ParticleDemo::destroy() {
 
     delete pendulum0;
     delete pendulum1;
+    delete pendulum2;
+    delete bungee;
     force_registry.clear();
 
     camera_destroy(camera);
